@@ -64,11 +64,15 @@ void loop() {
     pwm.writeMicroseconds(1,returnUsec(180 - servo1Out));
     delay(5);
   }
-
+  
   sensor1 = analogRead(A0);
   sensor2 = analogRead(A1);
   
   //Commands to write base to arm angle (one servo is reversed):
-  //pwm.writeMicroseconds(0,returnUsec(servo0Out));
-  //pwm.writeMicroseconds(1,returnUsec(180 - servo1Out));
+  /*
+  servo0Out = 90;
+  servo1Out = 90;
+  pwm.writeMicroseconds(0,returnUsec(servo0Out));
+  pwm.writeMicroseconds(1,returnUsec(180 - servo1Out));
+  */
 }
