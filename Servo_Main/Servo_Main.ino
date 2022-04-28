@@ -1,6 +1,7 @@
 #include <Wire.h>
 #include <Adafruit_PWMServoDriver.h>
 #include <PID_v1.h>
+#include <SharpDistSensor.h>
 
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 
@@ -12,17 +13,20 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 
 int servo0Out = 0;
 int servo1Out = 0;
-int inputDeg = 0;
 double posInput = 0;
 double anglOutput = 0;
 double setPoint = 0;
-double sensor1 = 0;
-double sensor2 = 0;
+double sensor1Pin = A0;
+double sensor2Pin = A1;
 
 double Kp1 = 0;
 double Ki1 = 0;
 double Kd1 = 0;
 
+
+
+SharpDistSensor IRsensor1(sensor1Pin, 5);
+SharpDistSensor IRsensor2(sensor2Pin, 5);
 PID platform(&posInput, &anglOutput, &setPoint, Kp1, Ki1, Kd1, DIRECT);
 
 //Function for converting degrees to Usec.
@@ -32,16 +36,42 @@ int returnUsec(int deg) {
   return (int)uSec;
 }
 
+double returnPos() {
+  double pos = 0.0;
+  //platform length
+  int len = 20;
+  int distance1 = IRsensor1.getDist();
+  int distance2 = IRsensor2.getDist();
+
+  if (distance1 < distance2) {
+    pos = (double)(-1*((abs(distance1-(len/2))+abs(distance2-(len/2)))/2));
+  }
+  else if (distance1 > distance2) {
+    pos = (double)(1*((abs(distance1-(len/2))+abs(distance2-(len/2)))/2));
+  }
+  else {
+    pos = 0.0;
+  }
+  return pos;
+}
+
 
 void setup() {
   Serial.begin(9600);
   pinMode(A0, INPUT);
+  pinMode(A1, INPUT);
   pwm.begin();
   pwm.setOscillatorFrequency(25250000);
   pwm.setPWMFreq(SERVO_FREQ);  // Analog servos run at ~50 Hz updates
+  IRsensor1.setModel(SharpDistSensor::GP2Y0A41SK0F_5V_DS);
+  IRsensor2.setModel(SharpDistSensor::GP2Y0A41SK0F_5V_DS)
 
+  platform.SetSampleTime(50);
+  platform.SetOutputLimits(-500, 500);
+  platform.SetMode(AUTOMATIC);
+  
   //set servos (arms) to 0 degrees
-  pwm.writeMicroseconds(0,returnUsec(0));
+  pw;m.writeMicroseconds(0,returnUsec(0));
   pwm.writeMicroseconds(1,returnUsec(180));
   delay(3000);
 }
@@ -65,8 +95,9 @@ void loop() {
     delay(5);
   }
   
-  sensor1 = analogRead(A0);
-  sensor2 = analogRead(A1);
+  posInput = returnPos();
+
+  platform.Compute();
   
   //Commands to write base to arm angle (one servo is reversed):
   /*
