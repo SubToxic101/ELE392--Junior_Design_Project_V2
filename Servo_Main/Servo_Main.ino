@@ -19,15 +19,16 @@ double setPoint = 0;
 double sensor1Pin = A0;
 double sensor2Pin = A1;
 
-double a3 = -0.00019;
-double a2 = -0.00058;
-double a1 = -0.74495;
-double a0 = 44.9389;
 
-double b3 = 0.000189;
-double b2 = -0.00058;
-double b1 = 0.74492;
-double b0 = 44.93859;
+double a3 = -0.00018934;
+double a2 = -0.00057738;
+double a1 = -0.74494985;
+double a0 = 44.93890101;
+
+double b3 = 0.00018937;
+double b2 = -0.00057721;
+double b1 = 0.74492032;
+double b0 = 44.93859251;
 
 double Kp1 = 0;
 double Ki1 = 0;
@@ -108,7 +109,7 @@ void setup() {
 
 void loop() {
   //Loops to cycle servos through full range of motion
-  /*
+  
   for (int i = 0; i < 180; i++) {
     servo0Out = i;
     servo1Out = i;
@@ -124,18 +125,19 @@ void loop() {
     pwm.writeMicroseconds(1,returnUsec(180 - servo1Out));
     delay(5);
   }
-  */
+  
   //posInput = returnPos();
 
   //platform.Compute();
   
   //Commands to write base to arm angle (one servo is reversed):
-  
-  servo0Out = 90;
-  servo1Out = 90;
+
+  /*
+  servo0Out = 0;
+  servo1Out = 0;
   pwm.writeMicroseconds(0,returnUsec(servo0Out));
   pwm.writeMicroseconds(1,returnUsec(180 - servo1Out));
-  Serial.println(angle_to_t1(0));
-  Serial.println(angle_to_t2(0));
-  
+  //Serial.println(angle_to_t1(0));
+  //Serial.println(angle_to_t2(0));
+  */
 }
