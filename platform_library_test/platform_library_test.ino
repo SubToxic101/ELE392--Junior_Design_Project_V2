@@ -28,14 +28,14 @@ void setup() {
 }
 
 void loop() {
-  platform.setAngle(-15);
-  delay(3000);
-  platform.setAngle(0);
-  delay(3000);
-  platform.setAngle(15);
-  delay(3000);
-  platform.setAngle(0);
-  delay(3000);
+//  platform.setAngle(-15);
+//  delay(3000);
+//  platform.setAngle(0);
+//  delay(3000);
+//  platform.setAngle(15);
+//  delay(3000);
+//  platform.setAngle(0);
+//  delay(3000);
 
   // put your main code here, to run repeatedly:
   //platform.setAngle(10);

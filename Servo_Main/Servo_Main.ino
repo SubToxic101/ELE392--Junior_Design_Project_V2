@@ -20,7 +20,9 @@ double sensor2Pin = A0;
 //""""Working""" Pids
 double Kp1 = 0.07;
 double Ki1 = 0.09;
-double Kd1 = 0.02;
+//double Kd1 = 0.02;
+
+double Kd1 = 0.028;
 
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 Platform platform = Platform();
@@ -84,7 +86,7 @@ void setup() {
   //set servos (arms) to 0 degrees
   //pwm.writeMicroseconds(0,returnUsec(0));
   //pwm.writeMicroseconds(1,returnUsec(180));
-  platform._init(Servo0, Servo1, 0);
+  platform._init(Servo0, Servo1, A1,A2, 0);
   delay(3000);
 }
 
