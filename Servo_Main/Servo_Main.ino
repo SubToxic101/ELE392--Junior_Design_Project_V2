@@ -35,9 +35,9 @@ double b2 = -0.00057721;
 double b1 = 0.74492032;
 double b0 = 44.93859251;
 
-double Kp1 = 0.1;
-double Ki1 = 0;
-double Kd1 = 0;
+double Kp1 = 0.06;
+double Ki1 = 0.083333333;
+double Kd1 = 0.0108;
 
 float a = 0.000003;
 float b = 0.0002;
@@ -155,15 +155,17 @@ void loop() {
   posInput = returnPos();
   //Serial.print("Input :  ");
   //Serial.println(posInput);
-
-  platform.Compute();
-  Serial.print("Output :  ");
-  Serial.println(anglOutput);
-  servo0Out = _polyModel(anglOutput);
-  servo1Out = _polyModel(-1*anglOutput);
-  myServo0.writeMicroseconds(returnUsec(servo0Out));
-  myServo1.writeMicroseconds(returnUsec(180 - servo1Out));
-  
+  if (abs(posInput - setPoint) > 20) {
+    platform.Compute();
+    Serial.print(millis());
+    Serial.print(", ");
+    Serial.println(anglOutput);
+    servo0Out = _polyModel(anglOutput);
+    servo1Out = _polyModel(-1*anglOutput);
+    myServo0.writeMicroseconds(returnUsec(servo0Out));
+    myServo1.writeMicroseconds(returnUsec(180 - servo1Out));
+  }
+  else {}
   /*
   for (int i = -20; i < 20; i++) {
     servo0Out = _polyModel(i);
