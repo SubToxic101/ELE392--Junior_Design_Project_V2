@@ -13,34 +13,32 @@ double returnPos() {
   int len = 320;
   int distance1 = IRsensor1.getDist();
   int distance2 = IRsensor2.getDist();
-
-//  if (distance1 < distance2) {
-//    if ((distance2 - distance1) < 10) {
-//      pos = 0.0;
-//    }
-//    else {
-//      pos = (double)(-1*((abs(distance1-(len/2))+abs(distance2-(len/2)))/2));
-//    }
-//  }
-//  else if (distance1 > distance2) {
-//    if ((distance1 - distance2) < 30) {
-//      pos = 0.0;
-//    }
-//    else {
-//      pos = (double)(1*((abs(distance1-(len/2))+abs(distance2-(len/2)))/2));
-//    }
-//  }
-//  else {
-//    pos = 0.0;
-//  }
-  
-  for(int i=1;i<=10;i++){
-    pos = (pos*i+(distance1-distance2))/(i+1);
-    delay(5);
+  /*
+  Serial.print("Sensor 1: ");
+  Serial.println(distance1);
+  Serial.print("Sensor 2: ");
+  Serial.println(distance2);
+  */
+  if (distance1 < distance2) {
+    if ((distance2 - distance1) < 10) {
+      pos = 0.0;
+    }
+    else {
+      pos = (double)(-1*((abs(distance1-(len/2))+abs(distance2-(len/2)))/2));
+    }
   }
-  
-  
-  return (pos+10)/10;
+  else if (distance1 > distance2) {
+    if ((distance1 - distance2) < 10) {
+      pos = 0.0;
+    }
+    else {
+      pos = (double)(1*((abs(distance1-(len/2))+abs(distance2-(len/2)))/2));
+    }
+  }
+  else {
+    pos = 0.0;
+  }
+  return pos;
 }
 
 void setup() {
@@ -55,6 +53,7 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  double dist = (returnPos());
+  double dist = (returnPos() / 10);
+  Serial.print("Out: ");
   Serial.println(dist);
 }
