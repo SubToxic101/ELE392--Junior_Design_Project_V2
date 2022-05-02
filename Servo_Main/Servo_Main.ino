@@ -18,8 +18,8 @@ double sensor1Pin = A1;
 double sensor2Pin = A0;
 
 double Kp1 = 0.07;
-double Ki1 = 0.083333333;
-double Kd1 = 0.0108;
+double Ki1 = 0.09;
+double Kd1 = 0.02;
 
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 Platform platform = Platform();
@@ -38,7 +38,7 @@ double returnPos() {
   int distance2 = IRsensor2.getDist();
 
   if (distance1 < distance2) {
-    if ((distance2 - distance1) < 10) {
+    if ((distance2 - distance1) < 20) {
       pos = 0.0;
     }
     else {
@@ -46,7 +46,7 @@ double returnPos() {
     }
   }
   else if (distance1 > distance2) {
-    if ((distance1 - distance2) < 10) {
+    if ((distance1 - distance2) < 20) {
       pos = 0.0;
     }
     else {
