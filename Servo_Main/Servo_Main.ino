@@ -96,9 +96,8 @@ void loop() {
   posInput = returnPos();
   //Serial.print("Input :  ");
   //Serial.println(posInput);
-  if (abs(posInput - setPoint) > 20) {
-    pid.Compute();
-    Serial.print("millis: "); Serial.print(millis()); Serial.print(", newPlatformAngle:"); Serial.println(newPlatformAngle);
-    platform.setAngle(newPlatformAngle);
-  }
+  pid.Compute();
+  Serial.print("millis: "); Serial.print(millis()); Serial.print(", newPlatformAngle:"); Serial.println(newPlatformAngle);
+  platform.setAngle(newPlatformAngle);
+  
 }
