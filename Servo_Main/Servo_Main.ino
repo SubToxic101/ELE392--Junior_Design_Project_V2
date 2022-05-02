@@ -2,8 +2,11 @@
 #include <Adafruit_PWMServoDriver.h>
 #include <PID_v1.h>
 #include <SharpDistSensor.h>
+#include <Servo.h>
 
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
+Servo myServo0;  
+Servo myServo1;
 
 #define SERVOMIN  150 // This is the 'minimum' pulse length count (out of 4096)  unused
 #define SERVOMAX  600 // This is the 'maximum' pulse length count (out of 4096)   unused
@@ -11,13 +14,15 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 #define USMAX  2500 // This is the rounded 'maximum' microsecond length
 #define SERVO_FREQ 50 // Analog servos run at ~50 Hz updates
 
-int servo0Out = 0;
-int servo1Out = 0;
+float servo0Out = 0;
+float servo1Out = 0;
 double posInput = 0;
 double anglOutput = 0;
 double setPoint = 0;
 double sensor1Pin = A0;
 double sensor2Pin = A1;
+int angl1 = 0;
+int angl2 = 0;
 
 
 double a3 = -0.00018934;
@@ -34,11 +39,21 @@ double Kp1 = 0;
 double Ki1 = 0;
 double Kd1 = 0;
 
+float a = 0.000003;
+float b = 0.0002;
+float c = -0.0028;
+float d = 0.7867;
+float e = 45.028;
 
 
 SharpDistSensor IRsensor1(sensor1Pin, 5);
 SharpDistSensor IRsensor2(sensor2Pin, 5);
 PID platform(&posInput, &anglOutput, &setPoint, Kp1, Ki1, Kd1, DIRECT);
+
+float _polyModel(int i) {
+// return float((0.00018937*pow(i,3)-0.00057721*pow(i,2)+0.74492032*i+44.93859251));
+ return float(a*pow(i,4) + b*pow(i,3) + c*pow(i,2) + d*i + e);
+}
 
 double angle_to_t1(double angle){
   return a3*angle*angle*angle+a2*angle*angle+a1*angle+a0;
@@ -49,9 +64,9 @@ double angle_to_t2(double angle){
 }
 
 //Function for converting degrees to Usec.
-int returnUsec(int deg) {
+int returnUsec(float deg) {
   double uSec;
-  uSec = (((double)deg/180)*2000)+500;
+  uSec = ((deg/180)*2000)+500;
   return (int)uSec;
 }
 
@@ -90,9 +105,15 @@ void setup() {
   Serial.begin(9600);
   pinMode(A0, INPUT);
   pinMode(A1, INPUT);
-  pwm.begin();
-  pwm.setOscillatorFrequency(25250000);
-  pwm.setPWMFreq(SERVO_FREQ);  // Analog servos run at ~50 Hz updates
+  pinMode(A4, OUTPUT);
+  pinMode(A5, OUTPUT);
+
+  myServo0.attach(A4);
+  myServo1.attach(A5);
+  
+  //pwm.begin();
+  //pwm.setOscillatorFrequency(25250000);
+  //pwm.setPWMFreq(SERVO_FREQ);  // Analog servos run at ~50 Hz updates
   IRsensor1.setModel(SharpDistSensor::GP2Y0A41SK0F_5V_DS);
   IRsensor2.setModel(SharpDistSensor::GP2Y0A41SK0F_5V_DS);
 
@@ -101,15 +122,17 @@ void setup() {
   platform.SetMode(AUTOMATIC);
   
   //set servos (arms) to 0 degrees
-  pwm.writeMicroseconds(0,returnUsec(0));
-  pwm.writeMicroseconds(1,returnUsec(180));
+  //pwm.writeMicroseconds(0,returnUsec(0));
+  //pwm.writeMicroseconds(1,returnUsec(180));
+  myServo0.writeMicroseconds(returnUsec(45));
+  myServo1.writeMicroseconds(returnUsec(180 - 45));
   delay(3000);
 }
 
 
 void loop() {
   //Loops to cycle servos through full range of motion
-  
+  /*
   for (int i = 0; i < 180; i++) {
     servo0Out = i;
     servo1Out = i;
@@ -125,13 +148,32 @@ void loop() {
     pwm.writeMicroseconds(1,returnUsec(180 - servo1Out));
     delay(5);
   }
+  */
   
   //posInput = returnPos();
 
   //platform.Compute();
-  
-  //Commands to write base to arm angle (one servo is reversed):
 
+  for (int i = -20; i < 20; i++) {
+    servo0Out = _polyModel(i);
+    servo1Out = _polyModel(-1*i);
+    myServo0.writeMicroseconds(returnUsec(servo0Out));
+    myServo1.writeMicroseconds(returnUsec(180 - servo1Out));
+    delay(50);
+  }
+
+  for (int g = 20; g > -20; g--) {
+    servo0Out = _polyModel(g);
+    servo1Out = _polyModel(-1*g);
+    myServo0.writeMicroseconds(returnUsec(servo0Out));
+    myServo1.writeMicroseconds(returnUsec(180 - servo1Out));
+    delay(50);
+  }
+  //Commands to write base to arm angle (one servo is reversed):
+  /*
+  myServo0.writeMicroseconds(returnUsec(angl1));
+  myServo1.writeMicroseconds(returnUsec(180 - angl2));
+  */
   /*
   servo0Out = 0;
   servo1Out = 0;
