@@ -19,8 +19,8 @@ float servo1Out = 0;
 double posInput = 0;
 double anglOutput = 0;
 double setPoint = 0;
-double sensor1Pin = A0;
-double sensor2Pin = A1;
+double sensor1Pin = A1;
+double sensor2Pin = A0;
 int angl1 = 0;
 int angl2 = 0;
 
@@ -35,7 +35,7 @@ double b2 = -0.00057721;
 double b1 = 0.74492032;
 double b0 = 44.93859251;
 
-double Kp1 = 0.2;
+double Kp1 = 0.1;
 double Ki1 = 0;
 double Kd1 = 0;
 
@@ -153,8 +153,12 @@ void loop() {
   setPoint = 0;
   
   posInput = returnPos();
+  //Serial.print("Input :  ");
+  //Serial.println(posInput);
 
   platform.Compute();
+  Serial.print("Output :  ");
+  Serial.println(anglOutput);
   servo0Out = _polyModel(anglOutput);
   servo1Out = _polyModel(-1*anglOutput);
   myServo0.writeMicroseconds(returnUsec(servo0Out));
