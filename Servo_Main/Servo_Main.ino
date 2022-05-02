@@ -79,7 +79,7 @@ double returnPos() {
   int distance2 = IRsensor2.getDist();
 
   if (distance1 < distance2) {
-    if ((distance2 - distance1) < 10) {
+    if ((distance2 - distance1) < 30) {
       pos = 0.0;
     }
     else {
@@ -87,7 +87,7 @@ double returnPos() {
     }
   }
   else if (distance1 > distance2) {
-    if ((distance1 - distance2) < 10) {
+    if ((distance1 - distance2) < 30) {
       pos = 0.0;
     }
     else {
@@ -153,19 +153,19 @@ void loop() {
   setPoint = 0;
   
   posInput = returnPos();
-  //Serial.print("Input :  ");
-  //Serial.println(posInput);
+  Serial.print("Input :  ");
+  Serial.println(posInput);
   if (abs(posInput - setPoint) > 20) {
     platform.Compute();
-    Serial.print(millis());
-    Serial.print(", ");
-    Serial.println(anglOutput);
     servo0Out = _polyModel(anglOutput);
     servo1Out = _polyModel(-1*anglOutput);
     myServo0.writeMicroseconds(returnUsec(servo0Out));
     myServo1.writeMicroseconds(returnUsec(180 - servo1Out));
   }
-  else {}
+  else {
+    myServo0.writeMicroseconds(returnUsec(servo0Out));
+    myServo1.writeMicroseconds(returnUsec(180 - servo1Out));
+  }
   /*
   for (int i = -20; i < 20; i++) {
     servo0Out = _polyModel(i);
