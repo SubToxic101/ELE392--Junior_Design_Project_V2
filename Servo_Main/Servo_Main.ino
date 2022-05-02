@@ -35,7 +35,7 @@ double b2 = -0.00057721;
 double b1 = 0.74492032;
 double b0 = 44.93859251;
 
-double Kp1 = 0;
+double Kp1 = 0.2;
 double Ki1 = 0;
 double Kd1 = 0;
 
@@ -79,7 +79,7 @@ double returnPos() {
   int distance2 = IRsensor2.getDist();
 
   if (distance1 < distance2) {
-    if ((distance2 - distance1) < 30) {
+    if ((distance2 - distance1) < 10) {
       pos = 0.0;
     }
     else {
@@ -87,7 +87,7 @@ double returnPos() {
     }
   }
   else if (distance1 > distance2) {
-    if ((distance1 - distance2) < 30) {
+    if ((distance1 - distance2) < 10) {
       pos = 0.0;
     }
     else {
@@ -118,7 +118,7 @@ void setup() {
   IRsensor2.setModel(SharpDistSensor::GP2Y0A41SK0F_5V_DS);
 
   platform.SetSampleTime(50);
-  platform.SetOutputLimits(-500, 500);
+  platform.SetOutputLimits(-20, 20);
   platform.SetMode(AUTOMATIC);
   
   //set servos (arms) to 0 degrees
@@ -149,11 +149,18 @@ void loop() {
     delay(5);
   }
   */
+
+  setPoint = 0;
   
-  //posInput = returnPos();
+  posInput = returnPos();
 
-  //platform.Compute();
-
+  platform.Compute();
+  servo0Out = _polyModel(anglOutput);
+  servo1Out = _polyModel(-1*anglOutput);
+  myServo0.writeMicroseconds(returnUsec(servo0Out));
+  myServo1.writeMicroseconds(returnUsec(180 - servo1Out));
+  
+  /*
   for (int i = -20; i < 20; i++) {
     servo0Out = _polyModel(i);
     servo1Out = _polyModel(-1*i);
@@ -169,6 +176,7 @@ void loop() {
     myServo1.writeMicroseconds(returnUsec(180 - servo1Out));
     delay(50);
   }
+  */
   //Commands to write base to arm angle (one servo is reversed):
   /*
   myServo0.writeMicroseconds(returnUsec(angl1));
