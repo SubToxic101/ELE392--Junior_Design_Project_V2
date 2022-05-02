@@ -17,6 +17,7 @@ double setPoint = 0;
 double sensor1Pin = A1;
 double sensor2Pin = A0;
 
+//""""Working""" Pids
 double Kp1 = 0.07;
 double Ki1 = 0.09;
 double Kd1 = 0.02;
