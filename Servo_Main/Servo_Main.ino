@@ -35,7 +35,7 @@ double b2 = -0.00057721;
 double b1 = 0.74492032;
 double b0 = 44.93859251;
 
-double Kp1 = 0.06;
+double Kp1 = 0.07;
 double Ki1 = 0.083333333;
 double Kd1 = 0.0108;
 
