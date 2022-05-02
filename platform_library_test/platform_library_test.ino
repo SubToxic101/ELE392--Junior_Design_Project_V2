@@ -1,5 +1,9 @@
 #include <Servo.h>
 #include <Platform.h>
+#include <SharpDistSensor.h>
+
+int sensor1Pin = A1;
+int sensor2Pin = A0;
 
 Servo Servo0;
 Servo Servo1;
@@ -17,7 +21,7 @@ void setup() {
   Servo0.attach(A4);
   Servo1.attach(A5);
 
-  platform._init(Servo0, Servo1, 0);
+  platform._init(Servo0, Servo1, sensor1Pin, sensor2Pin, 0);
   delay(3000);
 
   //  Serial.println(platform.SERVO0_ANGLE);

@@ -11,6 +11,7 @@
 
 // include description files for other libraries used (if any)
 #include <Servo.h>
+//#include <SharpDistSensor.h>
 
 // Constructor /////////////////////////////////////////////////////////////////
 // Function that handles the creation and setup of instances
@@ -27,7 +28,7 @@ Platform::Platform(void)
 // Public Methods //////////////////////////////////////////////////////////////
 // Functions available in Wiring sketches, this library, and other libraries
 
-void Platform::_init(Servo servo0, Servo servo1, int angle) {
+void Platform::_init(Servo servo0, Servo servo1, int sensor1Pin, int sensor2Pin, int angle) {
     
     
     
@@ -45,6 +46,9 @@ void Platform::_init(Servo servo0, Servo servo1, int angle) {
     Servo0 = servo0;
     Servo1 = servo1;
     setAngle(angle);
+    
+//    IRsensor1 = SharpDistSensor(sensor1Pin, 5);
+//    IRsensor1 = SharpDistSensor(sensor2Pin, 5);
 }
 
 void Platform::setAngle(int angle)
@@ -55,10 +59,10 @@ void Platform::setAngle(int angle)
     SERVO0_ANGLE = _polyModel(angle);
     SERVO1_ANGLE = _polyModel(-angle);
     
-    Servo0.writeMicroseconds(_degToUSec(SERVO0_ANGLE));
+    Servo0.writeMicroseconds(_degToUSec(SERVO0_ANGLE) + SERVO_OFFSET_MICROS);
 //    Serial.print("Servo0 ");Serial.println(_degToUSec(SERVO0_ANGLE));
 //    Serial.print("Servo1 ");Serial.println(_degToUSec(SERVO1_ANGLE));
-    Servo1.writeMicroseconds(_degToUSec(SERVO1_ANGLE));
+    Servo1.writeMicroseconds(_degToUSec(180 - SERVO1_ANGLE));
     
 //    int k0 = 1; int k1 = 1;
 //    if(SERVO0_ANGLE >= servo0Target) { k0 = -1; }
@@ -93,18 +97,18 @@ int Platform::_degToUSec(float deg) {
   return int(float((deg / 180) * 2000) + 500);
 }
 
-double Platform::getBallPos(void) {
-  double pos = 0.0;
-  //platform length
-  int len = 320;
-  int distance1 = IRsensor1.getDist();
-  int distance2 = IRsensor2.getDist();
-
-  if (distance1 < distance2 && (distance2 - distance1) > 10) {
-      pos = (double)(-1*((abs(distance1-(len/2))+abs(distance2-(len/2)))/2));
-  }
-  else if (distance1 > distance2 && (distance1 - distance2) > 10) {
-        pos = (double)(1*((abs(distance1-(len/2))+abs(distance2-(len/2)))/2));
-  }
-  return pos;
-}
+//double Platform::getBallPos(void) {
+//  double pos = 0.0;
+//  //platform length
+//  int len = 320;
+//  int distance1 = IRsensor1.getDist();
+//  int distance2 = IRsensor2.getDist();
+//
+//  if (distance1 < distance2 && (distance2 - distance1) > 10) {
+//      pos = (double)(-1*((abs(distance1-(len/2))+abs(distance2-(len/2)))/2));
+//  }
+//  else if (distance1 > distance2 && (distance1 - distance2) > 10) {
+//        pos = (double)(1*((abs(distance1-(len/2))+abs(distance2-(len/2)))/2));
+//  }
+//  return pos;
+//}
